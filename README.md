@@ -1,9 +1,9 @@
-![FileRun Logo](https://filerun.com/images/long-logo.png)
-
 What is FileRun?
 ==================
 
 [FileRun](https://filerun.com) is a self-hosted Google Drive/Photos/Music alternative. It is a full featured web based file manager with an easy to use user interface.
+
+This is a modified version of the official FileRun docker image, with several changes oriented toward use for photography.  For more info, see the docker hub page at https://hub.docker.com/r/nerdsofparadise/filerun
 
 Installation
 ==================
@@ -12,12 +12,10 @@ See https://docs.filerun.com/docker for the guide.
 Default login
 ==================
 
-The FileRun superuser default credentials are as follows:
+This docker image does not have default user credentials.  Unlike the official docker, it does not come with FileRun 'pre-installed'.
 
-``username``: ``superuser``
-``password``: ``superuser``
+The first time the container is run, FileRun will go through its normal installation process, similar to when it is installed on a bare metal server.  For more information on this install process, please see the installation docs at the official FileRun website.
 
-The volume ``/filerun/user-files`` has been mounted. Make sure your FileRun users home folder paths start with the path "/user-files/".
 
 SSL/HTTPS
 ==================
@@ -29,9 +27,6 @@ License
 ==================
 See the following document for the [licensing terms](https://goo.gl/wk2FSs).
 
-Issues
-==================
-If you have any problems with or questions about this image, please [contact us](https://filerun.com/contact).
 
 Documentation
 ==================
