@@ -13,6 +13,8 @@ VOLUME ["/var/www/html", "/user-files"]
 # see http://docs.filerun.com/php_configuration
 COPY filerun-optimization.ini /usr/local/etc/php/conf.d/
 COPY autoconfig.php entrypoint.sh wait-for-it.sh import-db.sh filerun.setup.sql supervisord.conf /
+# Copy patched ImageMagick.php
+COPY ImageMagick.php /
 # add PHP, extensions and third-party software
 RUN apt-get update \
     && apt-get install -y \
@@ -36,7 +38,8 @@ RUN apt-get update \
         unzip \
         cron \
         vim \
-        supervisor
+        supervisor \
+        graphicsmagick
 RUN apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir /var/log/supervisord /var/run/supervisord \
@@ -66,6 +69,9 @@ RUN apt-get clean \
     && echo [Download FileRun installation package version 2021.03.26] \
     && curl -o /filerun.zip -L 'https://f.afian.se/wl/?id=iwmi3ydsxr2Ocq1Lo6atTsIfQA70gDov&fmode=download&recipient=ZmlsZXJ1bi5jb20%3D' \
     && chown www-data:www-data /user-files \
-    && chmod +x /wait-for-it.sh /import-db.sh /entrypoint.sh
+    && chmod +x /wait-for-it.sh /import-db.sh /entrypoint.sh \
+# Modify GraphicsMagick delegates file to extract preview for raw files
+	&& sed -i 's/-c -w -6 -T/-c -e/g' `find /usr/lib | grep Graphics | grep delegates\.mgk` \
+	&& sed -i 's/--create-id=also --out-type=png --out-depth=16/--create-id=also --embedded-image --out-type=jpg --out-depth=8/g' `find /etc | grep Magick | grep delegates`
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/supervisord", "-c", "/supervisord.conf"]
